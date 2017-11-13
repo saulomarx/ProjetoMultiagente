@@ -1,0 +1,124 @@
+package diferenteMaq.primeirosContainers;
+
+import java.net.InetAddress;
+
+import jade.core.Profile;
+import jade.core.ProfileImpl;
+import jade.wrapper.AgentController;
+import jade.wrapper.AgentContainer;
+import jade.wrapper.ContainerController;
+import jade.wrapper.StaleProxyException;
+
+import test.common.remote.RemoteManager;
+import test.common.JadeController;
+import test.common.TestUtility;
+import test.common.remote.TSDaemon;
+
+public class CriarAgentes
+{
+   static ContainerController containerController;
+   static AgentController agentController;
+   static AgentContainer container[] = new AgentContainer [2];
+   
+   static jade.core.Runtime runtime;
+
+   public static void main(String[] args) throws InterruptedException 
+   {
+      JadeController jc=null; 
+      String ipMainContainer = "", jadeArgs="";
+      int num=0;
+       
+      try {
+         ipMainContainer = InetAddress.getLocalHost().getHostAddress();
+         System.out.println("IP: " + ipMainContainer);
+      } catch (Exception e) { } 
+       
+      //iniciando main container
+      //startMainContainer(Profile.LOCAL_HOST, Profile.LOCAL_PORT, "UFABC");
+      startMainContainer(ipMainContainer, "1099", "UFABC_EAD");
+      //startMainContainer("127.0.0.1", "1099", "UFABC_EAD");
+    
+      container[0] = null;
+      container[0]=startContainer(ipMainContainer, Profile.LOCAL_PORT, "CTutoresSA", runtime, container[0] );
+      container[1]=startContainer(ipMainContainer, Profile.LOCAL_PORT, "CTutoresSBC", runtime, container[0] );
+      
+      //adicionando agente
+      //SINTAXE: addAgent(container, nome_do_agente, classe, parametros de inicializacao)
+      String[] argumento = new String[1];
+      argumento[0] = "Tiro dúvidas sobre o nível micro de SMAs";
+      //argumento = null;
+      addAgent(container[0], "AgenteTutorSMA", AgenteTutorSMA.class.getName(), argumento);
+      String[] argumento1 = new String[1];
+      argumento1[0] = "Tiro dúvidas sobre comandos sequenciais e de desvio condicional, na linguagem Java";
+      addAgent(container[1], "AgenteTutorPI", AgenteTutorPI.class.getName(), argumento1);
+      String[] argumento2 = new String[1];
+      argumento2[0] = "Tiro dúvidas sobre conceitos teóricos de Lógica Fuzzy";
+      addAgent(container[0], "AgenteTutorLogicaFuzzy", AgenteTutorLogicaFuzzy.class.getName(), argumento2);
+
+      //Criando containers remotos
+      try {
+      String remoteHost = "192.168.15.15"; // O host/IP do container remoto
+      RemoteManager rm = TestUtility.createRemoteManager(remoteHost, TSDaemon.DEFAULT_PORT, 
+              TSDaemon.DEFAULT_NAME);
+      num++;
+      jadeArgs = "-container -container-name CAlunosSA -host " + Profile.getDefaultNetworkName() + 
+                      " -port 1099 -name UFABC_EAD -agents AgenteGraca:diferenteMaq.primeirosContainers.compRemoto.AgenteAluno";
+      jc = TestUtility.launchJadeInstance(rm, "Instancia"+num+"JADE", 
+              null, jadeArgs, null);
+
+      num++;
+      jadeArgs = "-container -container-name CAlunosSBC -host " + Profile.getDefaultNetworkName() + 
+                      " -port 1099 -name UFABC_EAD -agents AgenteJoao:diferenteMaq.primeirosContainers.compRemoto.AgenteAluno";
+      jc = TestUtility.launchJadeInstance(rm, "Instancia"+num+"JADE", 
+              null, jadeArgs, null);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+      
+      //adicionando agente RMA
+      //addAgent(containerController, "rma", "jade.tools.rma.rma", null);
+      addAgent(containerController, "rma", jade.tools.rma.rma.class.getName(), null);
+   }
+   
+   public static void startMainContainer(String host, String port, String name) {
+       //Inicia um nova instância de runtime da plataforma JADE 
+        runtime = jade.core.Runtime.instance();
+        Profile profile = new ProfileImpl();
+        profile.setParameter(Profile.MAIN_HOST, host);
+        profile.setParameter(Profile.MAIN_PORT, port);
+        profile.setParameter(Profile.PLATFORM_ID, name);
+        containerController = runtime.createMainContainer(profile);
+    }
+
+   public static AgentContainer startContainer(String host, String port, String nomeContainer, 
+           jade.core.Runtime runtime, AgentContainer container) {
+        Profile profile = new ProfileImpl();
+        profile.setParameter(Profile.MAIN_HOST, host);
+        profile.setParameter(Profile.MAIN_PORT, port);
+        profile.setParameter(Profile.CONTAINER_NAME, nomeContainer);
+        container = runtime.createAgentContainer(profile);
+        try
+        {
+           container.start();
+        }
+        catch(Exception e)
+        {
+            System.out.println("Erro: " + e);
+        }
+        return container;
+    }
+   
+    public static void addAgent(ContainerController cc, String agent, String classe, Object[] args) { 
+        try {
+            agentController = cc.createNewAgent(agent, classe, args);
+            agentController.start();
+        } catch (StaleProxyException s) {
+            s.printStackTrace();
+        }
+        catch(Exception e)
+        {
+            System.out.println("Erro: " + e);
+        }        
+    }
+}
