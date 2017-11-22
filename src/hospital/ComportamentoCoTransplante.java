@@ -28,15 +28,25 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
             mensagemParaEnvio.addReplyTo(new AID("CoTransplante", AID.ISLOCALNAME));
             //Envia a mensagem aos destinatarios
             myAgent.send(mensagemParaEnvio);
-            System.out.println(myAgent.getLocalName() + ": Enviando olá ao receptor");
-            System.out.println(myAgent.getLocalName() + "\n" + mensagemParaEnvio.toString());
+            System.out.println(myAgent.getLocalName() + ": Há disponibilidade para o exame");
+            
             enviouMensagen = !enviouMensagen;
         } else if (mensagemRecebida != null) {
-            System.out.println(myAgent.getLocalName() + ": Acaba de receber a seguinte mensagem: ");
+            String aux[] = mensagemRecebida.getContent().split(";");
+            String veioDoAgente = aux[0], codigoDaAcao = aux[1];
+            if(codigoDaAcao.equalsIgnoreCase("T")){
+                System.out.println(myAgent.getLocalName() + ": Trasnplante aprovado, solicitando reserva: ");
+                //mandar menssagem com a reserva '''R'''
+                fim = true;
+            } else if (codigoDaAcao.equalsIgnoreCase("F")){
+                 System.out.println(myAgent.getLocalName() + ": Trasnplante não aprovado, somente notificando");
+                //mandar menssagem com a sobre nao aprovacao '''N'''
+                fim = true;
+            }
+            
             System.out.println(mensagemRecebida.getContent());
-            fim = true;
         } else {
-            System.out.println("Aguardando resposta");
+            System.out.println(myAgent.getLocalName() + ": Aguardando resposta");
             block();
         }
 

@@ -26,8 +26,8 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
             if (veioDoAgente.equals("00001")) {
                 mensagemCoordenadorTransplante = mensagemRecebida;
                 if (codigoDaAcao.equalsIgnoreCase("C")) {
-                    System.out.println("Requisitado Disponibilidade");
-                    System.out.println("Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
+                    System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
+                    System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
                     //Criando e preenchendo menssagem
                     ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
                     mensagemParaEnvio.setSender(myAgent.getAID());
@@ -38,27 +38,49 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
                     
                     //Envia a mensagem aos destinatarios
                     myAgent.send(mensagemParaEnvio);
+                } else if (codigoDaAcao.equalsIgnoreCase("R")) {
+                    System.out.println(myAgent.getLocalName() + ": Transplante aprovado, reservar na agenda");
+                    //Criando e preenchendo menssagem
+                    ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
+                    mensagemParaEnvio.setSender(myAgent.getAID());
+                    mensagemParaEnvio.addReceiver(new AID("MedicoChefe", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReceiver(new AID("CoCentroCirurgico", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReplyTo(new AID("CoHospital", AID.ISLOCALNAME));
+                    mensagemParaEnvio.setContent("00010;R");
+                    
+                    //Envia a mensagem aos destinatarios
+                    myAgent.send(mensagemParaEnvio);
+                } else if (codigoDaAcao.equalsIgnoreCase("N")) {
+                    System.out.println(myAgent.getLocalName() + ": Transplante nao aprovado, Somente notificando");
+                    //Criando e preenchendo menssagem
+                    ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
+                    mensagemParaEnvio.setSender(myAgent.getAID());
+                    mensagemParaEnvio.addReceiver(new AID("MedicoChefe", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReceiver(new AID("CoCentroCirurgico", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReplyTo(new AID("CoHospital", AID.ISLOCALNAME));
+                    mensagemParaEnvio.setContent("00010;N");
+                    
+                    //Envia a mensagem aos destinatarios
+                    myAgent.send(mensagemParaEnvio);
                 }
                 
             } else if (veioDoAgente.equals("00100")) {
                 mensagemCoordenadorCentroCirurgico = mensagemRecebida;
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
-                    System.out.println("Centro Cirurgico disponivel");
+                    System.out.println(myAgent.getLocalName() + ": Centro Cirurgico disponivel");
                     situacaoCoCentroCirurgico = 1;
                 } else situacaoCoCentroCirurgico = -1;
                 verificarDisponibilidade(situacaoMedicoChefe, situacaoCoCentroCirurgico);
             } else if (veioDoAgente.equals("01000")) {
                 mensagemMedicoChefe = mensagemRecebida;
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
-                    System.out.println("Centro Cirurgico disponivel");
+                    System.out.println(myAgent.getLocalName() + ": Madico chefe aprovou o procedimento");
                     situacaoMedicoChefe = 1;
                 } else situacaoMedicoChefe = -1;
                 verificarDisponibilidade(situacaoMedicoChefe, situacaoCoCentroCirurgico);
             }
-
-            
         } else {
-            System.out.println("Receptor: Bloqueado para esperar receber mensagem.....");
+            System.out.println(myAgent.getLocalName() + ": Bloqueado para esperar receber mensagem.....");
             block();
         }
     } // Fim do método action()

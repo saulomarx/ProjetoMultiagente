@@ -2,12 +2,12 @@ package hospital;
 
 import jade.core.*;
 
-public class AgenteMedicoChefe extends Agent
+public class AgenteCoAnestesita extends Agent
 {
     
    @Override
    protected void setup()
    {
-      addBehaviour(new ComportamentoMedicoChefe(this));
+      addBehaviour(new ComportamentoCoAnestesista(this));
    }
 }

@@ -5,12 +5,12 @@ import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.*;
 import jade.core.AID;
 
-public class ComportamentoCoCentroCirurgico extends SimpleBehaviour {
+public class ComportamentoCoTimeMedico extends SimpleBehaviour {
 
     private boolean fim = false;
     private boolean disponibilidade = true;
 
-    public ComportamentoCoCentroCirurgico(Agent a) {
+    public ComportamentoCoTimeMedico(Agent a) {
         super(a);
     }
 
@@ -34,7 +34,7 @@ public class ComportamentoCoCentroCirurgico extends SimpleBehaviour {
                 }
                 ACLMessage resposta = mensagemRecebida.createReply();
                 resposta.setPerformative(ACLMessage.INFORM);
-                resposta.setContent("00100;" + situacao);
+                resposta.setContent("01100;" + situacao);
                 myAgent.send(resposta);
             }
         } else {
