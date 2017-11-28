@@ -40,6 +40,21 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
 
                     //Envia a mensagem aos destinatarios
                     myAgent.send(mensagemParaEnvio);
+                } else if (codigoDaAcao.equalsIgnoreCase("N")) {
+                    System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
+                    System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
+                    //Criando e preenchendo menssagem
+                    ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
+                    mensagemParaEnvio.setSender(myAgent.getAID());
+                    mensagemParaEnvio.addReceiver(new AID("CoAnestesita", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReceiver(new AID("CoEnfermagem", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReceiver(new AID("CoTimeMedico", AID.ISLOCALNAME));
+
+                    mensagemParaEnvio.addReplyTo(new AID("MedicoChefe", AID.ISLOCALNAME));
+                    mensagemParaEnvio.setContent("00010;N");
+
+                    //Envia a mensagem aos destinatarios
+                    myAgent.send(mensagemParaEnvio);
                 }
             
             } else if (veioDoAgente.equals("01100")) {
@@ -78,7 +93,8 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
     private void verificarDisponibilidade(int situacaoCoTimeMedico, int situacaoCoEnfermaria, int situacaoCoAnestesista) {
         if (situacaoCoTimeMedico == 1 && situacaoCoEnfermaria == 1 && situacaoCoAnestesista == 1) {
             sendResponse(mensagemCoordenadorHospital, "T");
-        } else if (situacaoCoTimeMedico == -1 || situacaoCoEnfermaria == -1 || situacaoCoAnestesista == -1) {
+        } else if (situacaoCoTimeMedico != 0 && situacaoCoEnfermaria != 0 && situacaoCoAnestesista != 0)
+            if (situacaoCoTimeMedico == -1 || situacaoCoEnfermaria == -1 || situacaoCoAnestesista == -1) {
             sendResponse(mensagemCoordenadorHospital, "F");
         }
     }

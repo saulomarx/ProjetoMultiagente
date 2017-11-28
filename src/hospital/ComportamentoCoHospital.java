@@ -87,7 +87,8 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
     
     private void verificarDisponibilidade(int situacaoCoCentroCirurgico, int situacaoMedicoChefe){
         if (situacaoCoCentroCirurgico == 1 && situacaoMedicoChefe == 1) sendResponse(mensagemCoordenadorTransplante, "T");
-        else if (situacaoCoCentroCirurgico == -1 || situacaoMedicoChefe == -1) sendResponse(mensagemCoordenadorTransplante, "F");
+        else if(situacaoCoCentroCirurgico != 0 && situacaoMedicoChefe != 0) 
+            if (situacaoCoCentroCirurgico == -1 || situacaoMedicoChefe == -1) sendResponse(mensagemCoordenadorTransplante, "F");
     }
     private void sendResponse(ACLMessage mensagemRecebida, String resultado){
             ACLMessage resposta =  mensagemRecebida.createReply();
