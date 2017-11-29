@@ -10,6 +10,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
     private boolean fim = false;
     private ACLMessage mensagemCoordenadorHospital;
     private int situacaoCoTimeMedico = 0, situacaoCoEnfermaria = 0, situacaoCoAnestesista = 0;
+    
 
     public ComportamentoMedicoChefe(Agent a) {
         super(a);
@@ -37,6 +38,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
 
                     mensagemParaEnvio.addReplyTo(new AID("MedicoChefe", AID.ISLOCALNAME));
                     mensagemParaEnvio.setContent("00010;C");
+                    mensagemParaEnvio.setConversationId(mensagemRecebida.getConversationId());
 
                     //Envia a mensagem aos destinatarios
                     myAgent.send(mensagemParaEnvio);
@@ -52,11 +54,13 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
 
                     mensagemParaEnvio.addReplyTo(new AID("MedicoChefe", AID.ISLOCALNAME));
                     mensagemParaEnvio.setContent("00010;N");
+                    mensagemParaEnvio.setConversationId(mensagemRecebida.getConversationId());
+                    
 
                     //Envia a mensagem aos destinatarios
                     myAgent.send(mensagemParaEnvio);
                 }
-            
+
             } else if (veioDoAgente.equals("01100")) {
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
                     System.out.println(myAgent.getLocalName() + ": Time Medico disponivel");
@@ -65,7 +69,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                     situacaoCoTimeMedico = -1;
                 }
                 verificarDisponibilidade(situacaoCoTimeMedico, situacaoCoEnfermaria, situacaoCoAnestesista);
-            
+
             } else if (veioDoAgente.equals("01010")) {
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
                     System.out.println(myAgent.getLocalName() + ": Time de Enfermagem Disponivel");
@@ -74,7 +78,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                     situacaoCoEnfermaria = -1;
                 }
                 verificarDisponibilidade(situacaoCoTimeMedico, situacaoCoEnfermaria, situacaoCoAnestesista);
-            
+
             } else if (veioDoAgente.equals("01001")) {
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
                     System.out.println(myAgent.getLocalName() + ": Time Anestesista Desponivel");
@@ -93,9 +97,10 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
     private void verificarDisponibilidade(int situacaoCoTimeMedico, int situacaoCoEnfermaria, int situacaoCoAnestesista) {
         if (situacaoCoTimeMedico == 1 && situacaoCoEnfermaria == 1 && situacaoCoAnestesista == 1) {
             sendResponse(mensagemCoordenadorHospital, "T");
-        } else if (situacaoCoTimeMedico != 0 && situacaoCoEnfermaria != 0 && situacaoCoAnestesista != 0)
+        } else if (situacaoCoTimeMedico != 0 && situacaoCoEnfermaria != 0 && situacaoCoAnestesista != 0) {
             if (situacaoCoTimeMedico == -1 || situacaoCoEnfermaria == -1 || situacaoCoAnestesista == -1) {
-            sendResponse(mensagemCoordenadorHospital, "F");
+                sendResponse(mensagemCoordenadorHospital, "F");
+            }
         }
     }
 
@@ -103,7 +108,8 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
         ACLMessage resposta = mensagemRecebida.createReply();
         resposta.setPerformative(ACLMessage.INFORM);
         resposta.setContent("01000;" + resultado);
-        
+                    System.out.println(myAgent.getLocalName() + ": =++++++++++="+resposta.toString());
+
         myAgent.send(resposta);
     }
 

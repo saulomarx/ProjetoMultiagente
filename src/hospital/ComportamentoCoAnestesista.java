@@ -8,7 +8,7 @@ import jade.core.AID;
 public class ComportamentoCoAnestesista extends SimpleBehaviour {
 
     private boolean fim = false;
-    private boolean disponibilidade = true;
+    private int disponibilidade = 0;
 
     public ComportamentoCoAnestesista(Agent a) {
         super(a);
@@ -23,14 +23,16 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1];
             if (codigoDaAcao.equalsIgnoreCase("N")) {
+                disponibilidade = 0;
                 System.out.println(myAgent.getLocalName() + ": Notificado");
             } else if (codigoDaAcao.equalsIgnoreCase("R")) {
-                disponibilidade = false;
+                disponibilidade = 1;
                 System.out.println(myAgent.getLocalName() + ": Reservado");
             } else if (codigoDaAcao.equalsIgnoreCase("C")) {
                 String situacao = "F";
-                if (disponibilidade) {
+                if (disponibilidade == 0) {
                     situacao = "T";
+                    disponibilidade = -1;
                 }
                 ACLMessage resposta = mensagemRecebida.createReply();
                 resposta.setPerformative(ACLMessage.INFORM);
