@@ -11,7 +11,6 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
 
     private boolean fim = false;
     private ACLMessage mensagemCoordenadorTransplante;
-    private int situacaoCoCentroCirurgico = 0 , situacaoMedicoChefe = 0;
     private Map<Integer,ACLMessage> bancoMenssagens = new HashMap<Integer,ACLMessage>();
     private Map<Integer,Integer> situacaoCoCentroCirurgico1 = new HashMap<Integer,Integer>();
     private Map<Integer,Integer> situacaoMedicoChefe1 = new HashMap<Integer,Integer>();
