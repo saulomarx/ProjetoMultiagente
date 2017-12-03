@@ -22,7 +22,8 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
     public void action() {
         ACLMessage mensagemRecebida = myAgent.receive();
         if (!enviouMensagen) {
-            System.out.println(myAgent.getLocalName() + ": Preparando para enviar una mensagem ao receptor");
+            for (protocolo = 1; protocolo<2;protocolo++){
+                System.out.println(myAgent.getLocalName() + ": Preparando para enviar una mensagem ao receptor");
             // Criação do objeto ACLMessage
             ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
             //Preencher os campos necesários da mensagem
@@ -32,13 +33,15 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
             mensagemParaEnvio.addReplyTo(new AID("CoTransplante", AID.ISLOCALNAME));
             mensagemParaEnvio.setConversationId(Integer.toString(protocolo));
             bancoMenssagens.put(protocolo,mensagemParaEnvio);
-            protocolo++;
+            //protocolo++;
             //Envia a mensagem aos destinatarios
             myAgent.send(mensagemParaEnvio);
             System.out.println(myAgent.getLocalName() + ": :"+bancoMenssagens);
             System.out.println(myAgent.getLocalName() + ": :"+bancoMenssagens);
             System.out.println(myAgent.getLocalName() + ": Há disponibilidade para o exame");
 
+            }
+            
             enviouMensagen = !enviouMensagen;
         } else if (mensagemRecebida != null) {
             int idAtual = Integer.parseInt(mensagemRecebida.getConversationId());
