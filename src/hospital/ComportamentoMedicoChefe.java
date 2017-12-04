@@ -16,10 +16,11 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
     private Map<Integer,Integer> situacaoCoTimeMedico1 = new HashMap<Integer,Integer>();
     private Map<Integer,Integer> situacaoCoEnfermaria1 = new HashMap<Integer,Integer>();
     private Map<Integer,Integer> situacaoCoAnestesista1 = new HashMap<Integer,Integer>();
-
-
+    
+    
     public ComportamentoMedicoChefe(Agent a) {
         super(a);
+        
     }
 
     @Override
