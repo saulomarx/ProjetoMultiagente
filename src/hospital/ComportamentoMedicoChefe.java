@@ -42,36 +42,12 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                 if (codigoDaAcao.equalsIgnoreCase("C")) {
                     System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
                     System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
-                    //Criando e preenchendo menssagem
-                    ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
-                    mensagemParaEnvio.setSender(myAgent.getAID());
-                    mensagemParaEnvio.addReceiver(new AID("CoAnestesita", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReceiver(new AID("CoEnfermagem", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReceiver(new AID("CoTimeMedico", AID.ISLOCALNAME));
-
-                    mensagemParaEnvio.addReplyTo(new AID("MedicoChefe", AID.ISLOCALNAME));
-                    mensagemParaEnvio.setContent("00010;C");
-                    mensagemParaEnvio.setConversationId(mensagemRecebida.getConversationId());
-
-                    //Envia a mensagem aos destinatarios
-                    myAgent.send(mensagemParaEnvio);
+                    sendMessage("00010;C", mensagemRecebida.getConversationId());
+                    
                 } else if (codigoDaAcao.equalsIgnoreCase("N")) {
                     System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
                     System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
-                    //Criando e preenchendo menssagem
-                    ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
-                    mensagemParaEnvio.setSender(myAgent.getAID());
-                    mensagemParaEnvio.addReceiver(new AID("CoAnestesita", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReceiver(new AID("CoEnfermagem", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReceiver(new AID("CoTimeMedico", AID.ISLOCALNAME));
-
-                    mensagemParaEnvio.addReplyTo(new AID("MedicoChefe", AID.ISLOCALNAME));
-                    mensagemParaEnvio.setContent("00010;N");
-                    mensagemParaEnvio.setConversationId(mensagemRecebida.getConversationId());
-                    
-
-                    //Envia a mensagem aos destinatarios
-                    myAgent.send(mensagemParaEnvio);
+                    sendMessage("00010;N", mensagemRecebida.getConversationId());
                 }
 
             } else if (veioDoAgente.equals("01100")) {
@@ -107,6 +83,20 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
             block();
         }
     } // Fim do método action()
+    
+    private void sendMessage(String message, String idConversa){
+        ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
+                    mensagemParaEnvio.setSender(myAgent.getAID());
+                    mensagemParaEnvio.addReceiver(new AID("CoAnestesita", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReceiver(new AID("CoEnfermagem", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReceiver(new AID("CoTimeMedico", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReplyTo(new AID("MedicoChefe", AID.ISLOCALNAME));
+                    mensagemParaEnvio.setContent(message);
+                    mensagemParaEnvio.setConversationId(idConversa);
+
+                    //Envia a mensagem aos destinatarios
+                    myAgent.send(mensagemParaEnvio);
+    }
 
     private void verificarDisponibilidade(int situacaoCoTimeMedico, int situacaoCoEnfermaria, int situacaoCoAnestesista) {
         if (situacaoCoTimeMedico == 1 && situacaoCoEnfermaria == 1 && situacaoCoAnestesista == 1) {

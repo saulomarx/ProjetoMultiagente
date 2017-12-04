@@ -8,7 +8,7 @@ import jade.core.AID;
 public class ComportamentoCoCentroCirurgico extends SimpleBehaviour {
 
     private boolean fim = false;
-    private boolean disponibilidade = true;
+    private boolean disponibilidade = false;
 
     public ComportamentoCoCentroCirurgico(Agent a) {
         super(a);
