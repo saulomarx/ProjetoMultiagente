@@ -10,7 +10,6 @@ import java.util.Map;
 public class ComportamentoCoHospital extends SimpleBehaviour {
 
     private boolean fim = false;
-    private ACLMessage mensagemCoordenadorTransplante;
     private Map<Integer,ACLMessage> bancoMenssagens = new HashMap<Integer,ACLMessage>();
     private Map<Integer,Integer> situacaoCoCentroCirurgico1 = new HashMap<Integer,Integer>();
     private Map<Integer,Integer> situacaoMedicoChefe1 = new HashMap<Integer,Integer>();
@@ -26,13 +25,15 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
         ACLMessage mensagemRecebida = myAgent.receive();
         
         if (mensagemRecebida != null) {
+            System.out.println(myAgent.getLocalName() + ": RECEBENDO :"+mensagemRecebida.getConversationId());
             int idAtual = Integer.parseInt(mensagemRecebida.getConversationId());
             if (!bancoMenssagens.containsKey(idAtual)){
                 bancoMenssagens.put(idAtual,mensagemRecebida);
                 situacaoCoCentroCirurgico1.put(idAtual,0);
                 situacaoMedicoChefe1.put(idAtual,0);
             }
-            
+                                
+
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1];
             
@@ -40,45 +41,25 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
                 if (codigoDaAcao.equalsIgnoreCase("C")) {
                     System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
                     System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
-                    //Criando e preenchendo menssagem
-                    ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
-                    mensagemParaEnvio.setSender(myAgent.getAID());
-                    mensagemParaEnvio.addReceiver(new AID("MedicoChefe", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReceiver(new AID("CoCentroCirurgico", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReplyTo(new AID("CoHospital", AID.ISLOCALNAME));
-                    mensagemParaEnvio.setContent("00010;C");
-                    mensagemParaEnvio.setConversationId(mensagemRecebida.getConversationId());
-                     System.out.println(myAgent.getLocalName() + ": ------------------------------------;"+mensagemRecebida.getConversationId());
-                    
+                
                     //Envia a mensagem aos destinatarios
-                    myAgent.send(mensagemParaEnvio);
+                    
+                    sendMessage("00010;C", mensagemRecebida.getConversationId());
+                    
                 } else if (codigoDaAcao.equalsIgnoreCase("R")) {
                     System.out.println(myAgent.getLocalName() + ": Transplante aprovado, reservar na agenda");
                     //Criando e preenchendo menssagem
-                    ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
-                    mensagemParaEnvio.setSender(myAgent.getAID());
-                    mensagemParaEnvio.addReceiver(new AID("MedicoChefe", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReceiver(new AID("CoCentroCirurgico", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReplyTo(new AID("CoHospital", AID.ISLOCALNAME));
-                    mensagemParaEnvio.setContent("00010;R");
-                    mensagemParaEnvio.setConversationId(mensagemRecebida.getConversationId());
+                    sendMessage("00010;R", mensagemRecebida.getConversationId());
                     bancoMenssagens.remove(idAtual);
                     
                     //Envia a mensagem aos destinatarios
-                    myAgent.send(mensagemParaEnvio);
                 } else if (codigoDaAcao.equalsIgnoreCase("N")) {
                     System.out.println(myAgent.getLocalName() + ": Transplante nao aprovado, Somente notificando");
                     //Criando e preenchendo menssagem
-                    ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
-                    mensagemParaEnvio.setSender(myAgent.getAID());
-                    mensagemParaEnvio.addReceiver(new AID("MedicoChefe", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReceiver(new AID("CoCentroCirurgico", AID.ISLOCALNAME));
-                    mensagemParaEnvio.addReplyTo(new AID("CoHospital", AID.ISLOCALNAME));
-                    mensagemParaEnvio.setContent("00010;N");
-                    mensagemParaEnvio.setConversationId(mensagemRecebida.getConversationId());
+                    sendMessage("00010;N", mensagemRecebida.getConversationId());
+
                     bancoMenssagens.remove(idAtual);
                     //Envia a mensagem aos destinatarios
-                    myAgent.send(mensagemParaEnvio);
                 }
                 
             } else if (veioDoAgente.equals("00100")) {
@@ -101,6 +82,17 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
             block();
         }
     } // Fim do método action()
+    
+    private void sendMessage(String message, String idMenssagem){
+         ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
+                    mensagemParaEnvio.setSender(myAgent.getAID());
+                    mensagemParaEnvio.addReceiver(new AID("MedicoChefe", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReceiver(new AID("CoCentroCirurgico", AID.ISLOCALNAME));
+                    mensagemParaEnvio.addReplyTo(new AID("CoHospital", AID.ISLOCALNAME));
+                    mensagemParaEnvio.setContent(message);
+                    mensagemParaEnvio.setConversationId(idMenssagem);
+                     myAgent.send(mensagemParaEnvio);
+    }
     
     private void verificarDisponibilidade(int situacaoCoCentroCirurgico, int situacaoMedicoChefe, int idAtual){
         if (situacaoCoCentroCirurgico == 1 && situacaoMedicoChefe == 1) sendResponse(bancoMenssagens.get(idAtual), "T", idAtual);
