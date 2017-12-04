@@ -27,13 +27,15 @@ public class ComportamentoCoEnfermagem extends SimpleBehaviour {
         //Obtem a primeira mensagem da fila de mensagens
         ACLMessage mensagemRecebida = myAgent.receive();
         if (mensagemRecebida != null) {
+            
             int hora=4;
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1];
             if (codigoDaAcao.equalsIgnoreCase("N")) {
+                cancelaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Notificado");
             } else if (codigoDaAcao.equalsIgnoreCase("R")) {
-                disponibilidade = false;
+                confirmaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Reservado");
             } else if (codigoDaAcao.equalsIgnoreCase("C")) {
                 String situacao = "F";

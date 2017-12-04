@@ -27,14 +27,15 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
         //Obtem a primeira mensagem da fila de mensagens
         ACLMessage mensagemRecebida = myAgent.receive();
         if (mensagemRecebida != null) {
+            
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1];
             int hora = 4;
             if (codigoDaAcao.equalsIgnoreCase("N")) {
-                disponibilidade = 0;
+                cancelaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Notificado");
             } else if (codigoDaAcao.equalsIgnoreCase("R")) {
-                disponibilidade = 1;
+                confirmaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Reservado");
             } else if (codigoDaAcao.equalsIgnoreCase("C")) {
                 String situacao = "F";

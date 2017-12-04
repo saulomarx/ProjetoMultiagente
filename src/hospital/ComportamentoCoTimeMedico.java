@@ -22,6 +22,7 @@ public class ComportamentoCoTimeMedico extends SimpleBehaviour {
 
     @Override
     public void action() {
+        
         System.out.println(myAgent.getLocalName() + ": Preparando para receber mensagens");
         //Obtem a primeira mensagem da fila de mensagens
         ACLMessage mensagemRecebida = myAgent.receive();
@@ -30,9 +31,10 @@ public class ComportamentoCoTimeMedico extends SimpleBehaviour {
             String veioDoAgente = aux[0], codigoDaAcao = aux[1];
             int hora=4;
             if (codigoDaAcao.equalsIgnoreCase("N")) {
+                cancelaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Notificado");
             } else if (codigoDaAcao.equalsIgnoreCase("R")) {
-                disponibilidade = false;
+                confirmaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Reservado");
             } else if (codigoDaAcao.equalsIgnoreCase("C")) {
                 String situacao = "F";
@@ -83,6 +85,7 @@ public class ComportamentoCoTimeMedico extends SimpleBehaviour {
 
     private void confirmaHorario(int hora) {
         for (int i = 0, l = horarios[hora].length; i < l; i++) {
+            System.out.println("OiEEEEEEEEEEEEEEEEEEEEEEEEEE");
             if (horarios[hora][i] == -1) {
                 horarios[hora][i] = 1;
                 return;
