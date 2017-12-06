@@ -104,7 +104,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
     } // Fim do método action()
 
     private void sendMessage(String message, String idConversa) {
-        ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
+        ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.REQUEST);
         mensagemParaEnvio.setSender(myAgent.getAID());
         mensagemParaEnvio.addReceiver(new AID("CoAnestesita", AID.ISLOCALNAME));
         mensagemParaEnvio.addReceiver(new AID("CoEnfermagem", AID.ISLOCALNAME));
@@ -131,7 +131,11 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
 
     private void sendResponse(ACLMessage mensagemRecebida, String resultado, String horario) {
         ACLMessage resposta = mensagemRecebida.createReply();
-        resposta.setPerformative(ACLMessage.INFORM);
+        if (resultado.equalsIgnoreCase("F")) {
+            resposta.setPerformative(ACLMessage.REFUSE);
+        } else if (resultado.equalsIgnoreCase("T")) {
+            resposta.setPerformative(ACLMessage.AGREE);
+        }
         resposta.setContent("01000;" + resultado + ";" + horario);
 
         myAgent.send(resposta);

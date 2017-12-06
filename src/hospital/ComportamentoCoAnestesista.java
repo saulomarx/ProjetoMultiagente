@@ -57,7 +57,12 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
                     reservaHorario(hora, idMenssagem);
                 }
                 ACLMessage resposta = mensagemRecebida.createReply();
-                resposta.setPerformative(ACLMessage.INFORM);
+                if (situacao.equalsIgnoreCase("F")) {
+                    resposta.setPerformative(ACLMessage.REFUSE);
+                } else if (situacao.equalsIgnoreCase("T")) {
+                    resposta.setPerformative(ACLMessage.AGREE);
+                }
+
                 resposta.setContent("01001;" + situacao + ";" + horario);
                 myAgent.send(resposta);
             }
@@ -110,7 +115,7 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
     }
 
     private void imprimirHorarios() {
-        String saida = "\n\t\t" + myAgent.getLocalName() + "\t\t\n0-> livre\t-1-> Reservado\t1-> Indsponivel\n"+"--------------------------------------"+"\n----\t\tF1\tF2\tF3\n";
+        String saida = "\n\t\t" + myAgent.getLocalName() + "\t\t\n0-> livre\t-1-> Reservado\t1-> Indsponivel\n" + "--------------------------------------" + "\n----\t\tF1\tF2\tF3\n";
         for (int i = 0, l = horarios.length; i < l; i++) {
             saida += "Horario" + Integer.toString(i) + ":\t";
             for (int j = 0, m = horarios[i].length; j < m; j++) {

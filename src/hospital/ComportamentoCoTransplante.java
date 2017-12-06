@@ -73,17 +73,17 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
         bancoMenssagens.put(protocolo, mensagemParaEnvio);
 
     }
-    
-    private int selectHour(){
+
+    private int selectHour() {
         String opcao = null;
-            while (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
-                opcao = JOptionPane.showInputDialog("Digite o horario entre 0 e 23 horas"
-                        + "\nO que você quer vai acontecer?\n");
-                if (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
-                    JOptionPane.showMessageDialog(null,
-                            "Opcao Invalida.");
-                }
+        while (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
+            opcao = JOptionPane.showInputDialog("Digite o horario entre 0 e 23 horas"
+                    + "\nO que você quer vai acontecer?\n");
+            if (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
+                JOptionPane.showMessageDialog(null,
+                        "Opcao Invalida.");
             }
+        }
         return Integer.parseInt(opcao);
     }
 
