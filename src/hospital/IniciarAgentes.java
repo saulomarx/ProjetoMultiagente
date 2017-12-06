@@ -26,17 +26,17 @@ public class IniciarAgentes {
         addAgent(containerController, "CoAnestesita", AgenteCoAnestesita.class.getName(), null);
         addAgent(containerController, "CoEnfermagem", AgenteCoEnfermagem.class.getName(), null);
         addAgent(containerController, "CoTimeMedico", AgenteCoTimeMedico.class.getName(), null);
-        // Thread.sleep(3000);        
+
         //adicionando agente RMA
-        //addAgent(containerController, "rma", "jade.tools.rma.rma", null);
+        addAgent(containerController, "rma", "jade.tools.rma.rma", null);
         //addAgent(containerController, "rma", jade.tools.rma.rma.class.getName(), null);        
         //Criando o agente Sniffer e definindo quais agentes ele irá controlar
         addAgent(containerController, "Sniffer", "jade.tools.sniffer.Sniffer",
-                new Object[]{"CoTransplante", ";"
-                        , "CoHospital", ";", 
-                        "CoCentroCirurgico", ";", "MedicoChefe",";"
-                        ,"CoAnestesita",";","CoEnfermagem",";","CoTimeMedico"
-});
+                new Object[]{"CoTransplante", ";", "CoHospital", ";",
+                    "CoCentroCirurgico", ";",
+                    "MedicoChefe", ";", "CoAnestesita", ";",
+                    "CoEnfermagem", ";", "CoTimeMedico"
+                });
     }
 
     public static void startMainContainer(String host, String port, String name) {
