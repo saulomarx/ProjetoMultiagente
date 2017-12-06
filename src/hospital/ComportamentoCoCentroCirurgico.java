@@ -36,25 +36,30 @@ public class ComportamentoCoCentroCirurgico extends SimpleBehaviour {
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1], horario = aux[2];
             int hora = Integer.parseInt(horario);
-     
+
             if (codigoDaAcao.equalsIgnoreCase("N")) {
                 cancelaHorario(hora);
-                System.out.println(myAgent.getLocalName()+":" +mensagemRecebida.getConversationId()+  ": Notificado");
-            
+                System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Notificado");
+
             } else if (codigoDaAcao.equalsIgnoreCase("R")) {
                 confirmaHorario(hora);
-                System.out.println(myAgent.getLocalName() +":" +mensagemRecebida.getConversationId()+  ": Reservado");
-            
+                System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Reservado");
+
             } else if (codigoDaAcao.equalsIgnoreCase("C")) {
-                System.out.println(myAgent.getLocalName()+":" +mensagemRecebida.getConversationId()+  ": Verificando Disponibilidade");
+                System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Verificando Disponibilidade");
                 String situacao = "F";
                 if (getDisponibilidade(hora)) {
                     situacao = "T";
                     reservaHorario(hora);
                 }
-            
+
                 ACLMessage resposta = mensagemRecebida.createReply();
-                resposta.setPerformative(ACLMessage.INFORM);
+                if (situacao.equalsIgnoreCase("F")) {
+                    resposta.setPerformative(ACLMessage.REFUSE);
+                } else if (situacao.equalsIgnoreCase("T")) {
+                    resposta.setPerformative(ACLMessage.AGREE);
+                }
+
                 resposta.setContent("00100;" + situacao + ";" + horario);
                 resposta.setConversationId(mensagemRecebida.getConversationId());
                 myAgent.send(resposta);
@@ -106,7 +111,7 @@ public class ComportamentoCoCentroCirurgico extends SimpleBehaviour {
     }
 
     private void imprimirHorarios() {
-        String saida = "\n\t\t" + myAgent.getLocalName() + "\t\t\n0-> livre\t-1-> Reservado\t1-> Indsponivel\n"+"--------------------------------------"+"\n----\t\tF1\tF2\tF3\n";
+        String saida = "\n\t\t" + myAgent.getLocalName() + "\t\t\n0-> livre\t-1-> Reservado\t1-> Indsponivel\n" + "--------------------------------------" + "\n----\t\tF1\tF2\tF3\n";
         for (int i = 0, l = horarios.length; i < l; i++) {
             saida += "Horario" + Integer.toString(i) + ":\t";
             for (int j = 0, m = horarios[i].length; j < m; j++) {
