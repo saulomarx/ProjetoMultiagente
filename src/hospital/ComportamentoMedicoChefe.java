@@ -10,7 +10,6 @@ import java.util.Map;
 public class ComportamentoMedicoChefe extends SimpleBehaviour {
 
     private boolean fim = false;
-    private ACLMessage mensagemCoordenadorHospital;
     //private int situacaoCoTimeMedico = 0, situacaoCoEnfermaria = 0, situacaoCoAnestesista = 0;
     private Map<Integer, ACLMessage> bancoMenssagens = new HashMap<Integer, ACLMessage>();
     private Map<Integer, Integer> situacaoCoTimeMedico1 = new HashMap<Integer, Integer>();
@@ -41,56 +40,55 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
             }
 
             if (veioDoAgente.equals("00010")) {
-                mensagemCoordenadorHospital = mensagemRecebida;
 
                 if (codigoDaAcao.equalsIgnoreCase("C")) {
-                    System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
-                    System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Requisitado Disponibilidade");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
                     sendMessage("00010;C;" + horario, mensagemRecebida.getConversationId());
 
                 } else if (codigoDaAcao.equalsIgnoreCase("N")) {
-                    System.out.println(myAgent.getLocalName() + ": Requisitado Cancelamento de reserva");
-                    System.out.println(myAgent.getLocalName() + ": Medico Chefe e ao Coordenador, cancelem o agendamento");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Requisitado Cancelamento de reserva");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Medico Chefe e ao Coordenador, cancelem o agendamento");
                     sendMessage("00010;N;" + horario, mensagemRecebida.getConversationId());
 
                 } else if (codigoDaAcao.equalsIgnoreCase("R")) {
-                    System.out.println(myAgent.getLocalName() + ": Requisitado Efetivacao de reserva");
-                    System.out.println(myAgent.getLocalName() + ": Medico Chefe e ao Coordenador do centro cirurgico, confirmado o horario!");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Requisitado Efetivacao de reserva");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Medico Chefe e ao Coordenador do centro cirurgico, confirmado o horario!");
                     sendMessage("00010;R;" + horario, mensagemRecebida.getConversationId());
                 }
 
             } else if (veioDoAgente.equals("01100")) {
 
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
-                    System.out.println(myAgent.getLocalName() + ": Time Medico disponivel");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Time Medico disponivel");
                     situacaoCoTimeMedico1.put(idAtual, 1);
 
                 } else {
                     situacaoCoTimeMedico1.put(idAtual, -1);
                 }
-                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario);
+                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario, idAtual);
 
             } else if (veioDoAgente.equals("01010")) {
 
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
-                    System.out.println(myAgent.getLocalName() + ": Time de Enfermagem Disponivel");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Time de Enfermagem Disponivel");
                     situacaoCoEnfermaria1.put(idAtual, 1);
 
                 } else {
                     situacaoCoEnfermaria1.put(idAtual, -1);
                 }
-                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario);
+                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario, idAtual);
 
             } else if (veioDoAgente.equals("01001")) {
 
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
-                    System.out.println(myAgent.getLocalName() + ": Time Anestesista Desponivel");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Time Anestesista Desponivel");
                     situacaoCoAnestesista1.put(idAtual, 1);
 
                 } else {
                     situacaoCoAnestesista1.put(idAtual, -1);
                 }
-                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario);
+                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario, idAtual);
             }
 
         } else {
@@ -113,14 +111,14 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
         myAgent.send(mensagemParaEnvio);
     }
 
-    private void verificarDisponibilidade(int situacaoCoTimeMedico, int situacaoCoEnfermaria, int situacaoCoAnestesista, String horario) {
+    private void verificarDisponibilidade(int situacaoCoTimeMedico, int situacaoCoEnfermaria, int situacaoCoAnestesista, String horario, int idAtual) {
         if (situacaoCoTimeMedico == 1 && situacaoCoEnfermaria == 1 && situacaoCoAnestesista == 1) {
-            sendResponse(mensagemCoordenadorHospital, "T", horario);
-        
+            sendResponse(bancoMenssagens.get(idAtual), "T", horario);
+
         } else if (situacaoCoTimeMedico != 0 && situacaoCoEnfermaria != 0 && situacaoCoAnestesista != 0) {
-        
+
             if (situacaoCoTimeMedico == -1 || situacaoCoEnfermaria == -1 || situacaoCoAnestesista == -1) {
-                sendResponse(mensagemCoordenadorHospital, "F", horario);
+                sendResponse(bancoMenssagens.get(idAtual), "F", horario);
             }
         }
     }

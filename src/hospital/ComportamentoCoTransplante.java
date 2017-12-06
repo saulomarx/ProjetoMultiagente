@@ -6,14 +6,13 @@ import jade.core.AID;
 import jade.lang.acl.*;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JOptionPane;
 
 public class ComportamentoCoTransplante extends SimpleBehaviour {
 
     boolean fim = false;
     boolean enviouMensagen = false;
     int protocolo = 1;
-    int hora = 4;
-    String s = "";
     Map<Integer, ACLMessage> bancoMenssagens = new HashMap<Integer, ACLMessage>();
 
     public ComportamentoCoTransplante(Agent a) {
@@ -25,7 +24,8 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
         ACLMessage mensagemRecebida = myAgent.receive();
 
         if (!enviouMensagen) {
-            for (protocolo = 1; protocolo < 3; protocolo++) {
+            for (protocolo = 1; protocolo < 5; protocolo++) {
+                int hora = selectHour();
                 sendMessage("00001;C;" + hora, Integer.toString(protocolo));
                 System.out.println(myAgent.getLocalName() + ": Pergunta: Há disponibilidade para o exame");
 
@@ -54,6 +54,7 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
             }
 
             System.out.println(mensagemRecebida.getContent());
+            System.out.println(mensagemRecebida.getConversationId());
         } else {
             System.out.println(myAgent.getLocalName() + ": Aguardando resposta");
             block();
@@ -73,6 +74,19 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
         //Preencher os campos necesários da mensagem
         bancoMenssagens.put(protocolo, mensagemParaEnvio);
 
+    }
+    
+    private int selectHour(){
+        String opcao = null;
+            while (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
+                opcao = JOptionPane.showInputDialog("Digite o horario entre 0 e 23 horas"
+                        + "\nO que você quer vai acontecer?\n");
+                if (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
+                    JOptionPane.showMessageDialog(null,
+                            "Opcao Invalida.");
+                }
+            }
+        return Integer.parseInt(opcao);
     }
 
     @Override
