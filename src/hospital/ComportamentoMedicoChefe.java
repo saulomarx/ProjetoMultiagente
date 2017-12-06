@@ -16,10 +16,11 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
     private Map<Integer,Integer> situacaoCoTimeMedico1 = new HashMap<Integer,Integer>();
     private Map<Integer,Integer> situacaoCoEnfermaria1 = new HashMap<Integer,Integer>();
     private Map<Integer,Integer> situacaoCoAnestesista1 = new HashMap<Integer,Integer>();
-
-
+    
+    
     public ComportamentoMedicoChefe(Agent a) {
         super(a);
+        
     }
 
     @Override
@@ -28,6 +29,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
         //Obtem a primeira mensagem da fila de mensagens
         ACLMessage mensagemRecebida = myAgent.receive();
         if (mensagemRecebida != null) {
+            
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1];
             int idAtual = Integer.parseInt(mensagemRecebida.getConversationId());
@@ -48,6 +50,11 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                     System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
                     System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
                     sendMessage("00010;N", mensagemRecebida.getConversationId());
+                    
+                } else if (codigoDaAcao.equalsIgnoreCase("R")) {
+                    System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
+                    System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
+                    sendMessage("00010;R", mensagemRecebida.getConversationId());
                 }
 
             } else if (veioDoAgente.equals("01100")) {

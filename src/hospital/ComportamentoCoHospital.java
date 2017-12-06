@@ -25,6 +25,14 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
         ACLMessage mensagemRecebida = myAgent.receive();
         
         if (mensagemRecebida != null) {
+                try
+       {
+          Thread.sleep(2000);
+       }
+       catch(Exception e)
+       {
+          System.out.println("Erro: " + e);
+       }
             System.out.println(myAgent.getLocalName() + ": RECEBENDO :"+mensagemRecebida.getConversationId());
             int idAtual = Integer.parseInt(mensagemRecebida.getConversationId());
             if (!bancoMenssagens.containsKey(idAtual)){
