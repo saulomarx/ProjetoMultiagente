@@ -65,25 +65,26 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
                 }
 
             } else if (veioDoAgente.equals("00100")) {
-                System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": menssagem recebida 0");
-                            System.out.println(myAgent.getLocalName() + ": OOOOOOOOOOOOOOOOOOOOOOOOOOOO....."+idAtual);
 
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
                     System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Centro Cirurgico disponivel");
                     situacaoCoCentroCirurgico1.put(idAtual, 1);
                 } else {
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Centro Cirurgico nao disponivel");
+
                     situacaoCoCentroCirurgico1.put(idAtual, -1);
                 }
                 verificarDisponibilidade(situacaoMedicoChefe1.get(idAtual), situacaoCoCentroCirurgico1.get(idAtual), idAtual, horario);
 
             } else if (veioDoAgente.equals("01000")) {
-                            System.out.println(myAgent.getLocalName() + ": 1OOOOOOOOOOOOOOOOOOOOOOOOOOOO....."+idAtual);
 
                 System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": menssagem recebida 1");
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
                     System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Madico chefe aprovou o procedimento");
                     situacaoMedicoChefe1.put(idAtual, 1);
                 } else {
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Madico chefe nao aprovou o procedimento");
+
                     situacaoMedicoChefe1.put(idAtual, -1);
                 }
                 verificarDisponibilidade(situacaoMedicoChefe1.get(idAtual), situacaoCoCentroCirurgico1.get(idAtual), idAtual, horario);
@@ -110,7 +111,6 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
             sendResponse(bancoMenssagens.get(idAtual), "T", idAtual, horario);
         } else if (situacaoCoCentroCirurgico != 0 && situacaoMedicoChefe != 0) {
             if (situacaoCoCentroCirurgico == -1 || situacaoMedicoChefe == -1) {
-                            
 
                 sendResponse(bancoMenssagens.get(idAtual), "F", idAtual, horario);
             }

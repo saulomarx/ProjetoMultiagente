@@ -106,7 +106,7 @@ public class ComportamentoCoCentroCirurgico extends SimpleBehaviour {
     }
 
     private void imprimirHorarios() {
-        String saida = "\n\t\t" + myAgent.getLocalName() + "\t\t\n";
+        String saida = "\n\t\t" + myAgent.getLocalName() + "\t\t\n0-> livre\t-1-> Reservado\t1-> Indsponivel\n"+"--------------------------------------"+"\n----\t\tF1\tF2\tF3\n";
         for (int i = 0, l = horarios.length; i < l; i++) {
             saida += "Horario" + Integer.toString(i) + ":\t";
             for (int j = 0, m = horarios[i].length; j < m; j++) {

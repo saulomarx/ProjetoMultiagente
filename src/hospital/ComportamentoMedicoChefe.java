@@ -42,12 +42,12 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
             if (veioDoAgente.equals("00010")) {
 
                 if (codigoDaAcao.equalsIgnoreCase("C")) {
-                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Requisitado Disponibilidade");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Requisitado Disponibilidade");
                     System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
                     sendMessage("00010;C;" + horario, mensagemRecebida.getConversationId());
 
                 } else if (codigoDaAcao.equalsIgnoreCase("N")) {
-                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Requisitado Cancelamento de reserva");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Requisitado Cancelamento de reserva");
                     System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Medico Chefe e ao Coordenador, cancelem o agendamento");
                     sendMessage("00010;N;" + horario, mensagemRecebida.getConversationId());
 
@@ -60,10 +60,12 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
             } else if (veioDoAgente.equals("01100")) {
 
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
-                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Time Medico disponivel");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Time Medico disponivel");
                     situacaoCoTimeMedico1.put(idAtual, 1);
 
                 } else {
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Time Medico nao disponivel");
+
                     situacaoCoTimeMedico1.put(idAtual, -1);
                 }
                 verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario, idAtual);
@@ -71,10 +73,12 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
             } else if (veioDoAgente.equals("01010")) {
 
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
-                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Time de Enfermagem Disponivel");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Time de Enfermagem Disponivel");
                     situacaoCoEnfermaria1.put(idAtual, 1);
 
                 } else {
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Time de Enfermagem nao Disponivel");
+
                     situacaoCoEnfermaria1.put(idAtual, -1);
                 }
                 verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario, idAtual);
@@ -82,11 +86,13 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
             } else if (veioDoAgente.equals("01001")) {
 
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
-                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() +  ": Time Anestesista Desponivel");
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Time Anestesista Disponivel");
                     situacaoCoAnestesista1.put(idAtual, 1);
 
                 } else {
                     situacaoCoAnestesista1.put(idAtual, -1);
+                    System.out.println(myAgent.getLocalName() + ":" + mensagemRecebida.getConversationId() + ": Time Anestesista nao Disponivel");
+
                 }
                 verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario, idAtual);
             }

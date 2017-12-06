@@ -53,8 +53,6 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
 
             }
 
-            System.out.println(mensagemRecebida.getContent());
-            System.out.println(mensagemRecebida.getConversationId());
         } else {
             System.out.println(myAgent.getLocalName() + ": Aguardando resposta");
             block();
