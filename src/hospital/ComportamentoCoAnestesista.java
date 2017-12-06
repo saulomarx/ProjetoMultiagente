@@ -8,7 +8,6 @@ import jade.core.AID;
 public class ComportamentoCoAnestesista extends SimpleBehaviour {
 
     private boolean fim = false;
-    private int disponibilidade = 0;
         private int [][] horarios = new int [24][3]; 
 
 
@@ -23,26 +22,35 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
 
     @Override
     public void action() {
+       
         System.out.println(myAgent.getLocalName() + ": Preparando para receber mensagens");
         //Obtem a primeira mensagem da fila de mensagens
         ACLMessage mensagemRecebida = myAgent.receive();
         if (mensagemRecebida != null) {
+               try
+       {
+          Thread.sleep(2000);
+       }
+       catch(Exception e)
+       {
+          System.out.println("Erro: " + e);
+       }
             
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1];
+            int idMenssagem = Integer.parseInt(mensagemRecebida.getConversationId()); 
             int hora = 4;
             if (codigoDaAcao.equalsIgnoreCase("N")) {
-                cancelaHorario(hora);
+                cancelaHorario(hora, idMenssagem);
                 System.out.println(myAgent.getLocalName() + ": Notificado");
             } else if (codigoDaAcao.equalsIgnoreCase("R")) {
-                confirmaHorario(hora);
+                confirmaHorario(hora, idMenssagem);
                 System.out.println(myAgent.getLocalName() + ": Reservado");
             } else if (codigoDaAcao.equalsIgnoreCase("C")) {
                 String situacao = "F";
-                if (getDisponibilidade(hora)) {
+                if (getDisponibilidade(hora, idMenssagem)) {
                     situacao = "T";
-                    disponibilidade = -1;
-                    reservaHorario(hora);
+                    reservaHorario(hora, idMenssagem);
                 }
                 ACLMessage resposta = mensagemRecebida.createReply();
                 resposta.setPerformative(ACLMessage.INFORM);
@@ -56,14 +64,14 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
         }
     } // Fim do método action()
 
-        private boolean getDisponibilidade(int hora){
+        private boolean getDisponibilidade(int hora, int idMessaegem){
         for(int i = 0, l = horarios[hora].length;i<l;i++){
             if(horarios[hora][i] == 0) return true;
         }
         return false;
     }
     
-    private void reservaHorario(int hora){
+    private void reservaHorario(int hora, int idMessaegem){
         for(int i = 0, l = horarios[hora].length;i<l;i++){
             if(horarios[hora][i] == 0){
                 horarios[hora][i] = -1;
@@ -73,7 +81,7 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
         
     }
     
-    private void cancelaHorario(int hora){
+    private void cancelaHorario(int hora, int idMessaegem){
         for(int i = 0, l = horarios[hora].length;i<l;i++){
             if(horarios[hora][i] == -1){
                 horarios[hora][i] = 0;
@@ -83,7 +91,7 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
         
     }
     
-    private void confirmaHorario(int hora){
+    private void confirmaHorario(int hora, int idMessaegem){
         for(int i = 0, l = horarios[hora].length;i<l;i++){
             if(horarios[hora][i] == -1){
                 horarios[hora][i] = 1;

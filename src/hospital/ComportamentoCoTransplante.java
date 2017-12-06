@@ -23,7 +23,7 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
     public void action() {
         ACLMessage mensagemRecebida = myAgent.receive();
         if (!enviouMensagen) {
-            for (protocolo = 1; protocolo < 4; protocolo++) {
+            for (protocolo = 1; protocolo < 3; protocolo++) {
                 System.out.println(myAgent.getLocalName() + ": Preparando para enviar una mensagem ao receptor");
                 sendMessage("00001;C", Integer.toString(protocolo));
                 System.out.println(myAgent.getLocalName() + ": Há disponibilidade para o exame");

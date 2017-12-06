@@ -8,7 +8,7 @@ import jade.core.AID;
 public class ComportamentoCoEnfermagem extends SimpleBehaviour {
 
     private boolean fim = false;
-    private boolean disponibilidade = true;
+    //private boolean disponibilidade = true;
         private int [][] horarios = new int [24][3]; 
 
 
@@ -23,11 +23,19 @@ public class ComportamentoCoEnfermagem extends SimpleBehaviour {
 
     @Override
     public void action() {
+      
         System.out.println(myAgent.getLocalName() + ": Preparando para receber mensagens");
         //Obtem a primeira mensagem da fila de mensagens
         ACLMessage mensagemRecebida = myAgent.receive();
         if (mensagemRecebida != null) {
-            
+                try
+       {
+          Thread.sleep(2000);
+       }
+       catch(Exception e)
+       {
+          System.out.println("Erro: " + e);
+       }
             int hora=4;
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1];
