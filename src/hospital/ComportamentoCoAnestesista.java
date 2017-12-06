@@ -26,6 +26,7 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
         //Obtem a primeira mensagem da fila de mensagens
         ACLMessage mensagemRecebida = myAgent.receive();
         if (mensagemRecebida != null) {
+            
             try {
                 Thread.sleep(2000);
             } catch (Exception e) {
@@ -34,14 +35,18 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
 
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1], horario = aux[2];
+            
             int idMenssagem = Integer.parseInt(mensagemRecebida.getConversationId());
             int hora = Integer.parseInt(horario);
+            
             if (codigoDaAcao.equalsIgnoreCase("N")) {
                 cancelaHorario(hora, idMenssagem);
                 System.out.println(myAgent.getLocalName() + ": Notificado");
+            
             } else if (codigoDaAcao.equalsIgnoreCase("R")) {
                 confirmaHorario(hora, idMenssagem);
                 System.out.println(myAgent.getLocalName() + ": Reservado");
+            
             } else if (codigoDaAcao.equalsIgnoreCase("C")) {
                 String situacao = "F";
                 if (getDisponibilidade(hora, idMenssagem)) {
@@ -54,6 +59,7 @@ public class ComportamentoCoAnestesista extends SimpleBehaviour {
                 myAgent.send(resposta);
             }
             imprimirHorarios();
+        
         } else {
             System.out.println(myAgent.getLocalName() + ": Bloqueado para esperar receber mensagem.....");
             block();

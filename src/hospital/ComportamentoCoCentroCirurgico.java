@@ -33,25 +33,28 @@ public class ComportamentoCoCentroCirurgico extends SimpleBehaviour {
                 System.out.println("Erro: " + e);
             }
 
-            
             String aux[] = mensagemRecebida.getContent().split(";");
             String veioDoAgente = aux[0], codigoDaAcao = aux[1], horario = aux[2];
             int hora = Integer.parseInt(horario);
+     
             if (codigoDaAcao.equalsIgnoreCase("N")) {
                 cancelaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Notificado");
+            
             } else if (codigoDaAcao.equalsIgnoreCase("R")) {
                 confirmaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Reservado");
+            
             } else if (codigoDaAcao.equalsIgnoreCase("C")) {
                 String situacao = "F";
                 if (getDisponibilidade(hora)) {
                     situacao = "T";
                     reservaHorario(hora);
                 }
+            
                 ACLMessage resposta = mensagemRecebida.createReply();
                 resposta.setPerformative(ACLMessage.INFORM);
-                resposta.setContent("00100;" + situacao+";"+horario);
+                resposta.setContent("00100;" + situacao + ";" + horario);
                 resposta.setConversationId(mensagemRecebida.getConversationId());
                 myAgent.send(resposta);
             }
