@@ -22,9 +22,10 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
     @Override
     public void action() {
         ACLMessage mensagemRecebida = myAgent.receive();
-
+        
         if (!enviouMensagen) {
-            for (protocolo = 1; protocolo < 5; protocolo++) {
+            int maxInterations = selectInterations();
+            for (protocolo = 1; protocolo <= maxInterations; protocolo++) {
                 int hora = selectHour();
                 sendMessage("00001;C;" + hora, Integer.toString(protocolo), ACLMessage.REQUEST);
                 System.out.println(myAgent.getLocalName() + ": Pergunta: Há disponibilidade para o exame");
@@ -77,8 +78,19 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
     private int selectHour() {
         String opcao = null;
         while (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
-            opcao = JOptionPane.showInputDialog("Digite o horario entre 0 e 23 horas"
-                    + "\nO que você quer vai acontecer?\n");
+            opcao = JOptionPane.showInputDialog("Digite o horario entre 0 e 23 horas");
+            if (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
+                JOptionPane.showMessageDialog(null,
+                        "Opcao Invalida.");
+            }
+        }
+        return Integer.parseInt(opcao);
+    }
+    
+    private int selectInterations() {
+        String opcao = null;
+        while (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
+            opcao = JOptionPane.showInputDialog("Quantas interacoes deseja fazer?");
             if (opcao == null || opcao.equals("") || Integer.parseInt(opcao) > 23 || Integer.parseInt(opcao) < 0) {
                 JOptionPane.showMessageDialog(null,
                         "Opcao Invalida.");
