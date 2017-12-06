@@ -33,8 +33,8 @@ public class ComportamentoCoTimeMedico extends SimpleBehaviour {
             System.out.println("Erro: " + e);
         }
             String aux[] = mensagemRecebida.getContent().split(";");
-            String veioDoAgente = aux[0], codigoDaAcao = aux[1];
-            int hora=4;
+            String veioDoAgente = aux[0], codigoDaAcao = aux[1], horario = aux[2];
+            int hora=Integer.parseInt(horario);
             if (codigoDaAcao.equalsIgnoreCase("N")) {
                 cancelaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Notificado");
@@ -49,7 +49,7 @@ public class ComportamentoCoTimeMedico extends SimpleBehaviour {
                 }
                 ACLMessage resposta = mensagemRecebida.createReply();
                 resposta.setPerformative(ACLMessage.INFORM);
-                resposta.setContent("01100;" + situacao);
+                resposta.setContent("01100;" + situacao+";"+horario);
                 myAgent.send(resposta);
             }
             imprimirHorarios();
@@ -62,7 +62,6 @@ public class ComportamentoCoTimeMedico extends SimpleBehaviour {
     private boolean getDisponibilidade(int hora) {
         for (int i = 0, l = horarios[hora].length; i < l; i++) {
             if (horarios[hora][i] == 0) {
-                horarios[hora][i] = -1;
                 return true;
             }
         }
@@ -91,7 +90,6 @@ public class ComportamentoCoTimeMedico extends SimpleBehaviour {
 
     private void confirmaHorario(int hora) {
         for (int i = 0, l = horarios[hora].length; i < l; i++) {
-            System.out.println("OiEEEEEEEEEEEEEEEEEEEEEEEEEE");
             if (horarios[hora][i] == -1) {
                 horarios[hora][i] = 1;
                 return;

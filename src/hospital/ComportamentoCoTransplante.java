@@ -12,6 +12,7 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
     boolean fim = false;
     boolean enviouMensagen = false;
     int protocolo = 1;
+    int hora = 4;
     String s = "";
     Map<Integer, ACLMessage> bancoMenssagens = new HashMap<Integer, ACLMessage>();
 
@@ -25,7 +26,7 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
         if (!enviouMensagen) {
             for (protocolo = 1; protocolo < 3; protocolo++) {
                 System.out.println(myAgent.getLocalName() + ": Preparando para enviar una mensagem ao receptor");
-                sendMessage("00001;C", Integer.toString(protocolo));
+                sendMessage("00001;C;"+hora, Integer.toString(protocolo));
                 System.out.println(myAgent.getLocalName() + ": Há disponibilidade para o exame");
 
             }
@@ -34,19 +35,19 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
         } else if (mensagemRecebida != null) {
             int idAtual = Integer.parseInt(mensagemRecebida.getConversationId());
             String aux[] = mensagemRecebida.getContent().split(";");
-            String veioDoAgente = aux[0], codigoDaAcao = aux[1];
+            String veioDoAgente = aux[0], codigoDaAcao = aux[1], horario = aux[2];
             int idMensagem = Integer.parseInt(mensagemRecebida.getConversationId());
             //System.out.println(myAgent.getLocalName() + ": :" + bancoMenssagens.get(idMensagem).toString());
             if (codigoDaAcao.equalsIgnoreCase("T")) {
                 System.out.println(myAgent.getLocalName() + ": Trasnplante aprovado, solicitando reserva: ");
                 //mandar menssagem com a reserva '''R'''
-                sendMessage("00001;R", mensagemRecebida.getConversationId());
+                sendMessage("00001;R;"+horario, mensagemRecebida.getConversationId());
 
                 bancoMenssagens.remove(idAtual);
             } else if (codigoDaAcao.equalsIgnoreCase("F")) {
                 System.out.println(myAgent.getLocalName() + ": Trasnplante não aprovado, somente notificando");
                 //nmandar menssagem com a sobre nao aprovacao '''N'''
-                sendMessage("00001;N", mensagemRecebida.getConversationId());
+                sendMessage("00001;N;"+horario, mensagemRecebida.getConversationId());
                 bancoMenssagens.remove(idAtual);
 
             }

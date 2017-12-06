@@ -36,9 +36,10 @@ public class ComportamentoCoEnfermagem extends SimpleBehaviour {
        {
           System.out.println("Erro: " + e);
        }
-            int hora=4;
+            
             String aux[] = mensagemRecebida.getContent().split(";");
-            String veioDoAgente = aux[0], codigoDaAcao = aux[1];
+            String veioDoAgente = aux[0], codigoDaAcao = aux[1], horario = aux[2];
+            int hora = Integer.parseInt(horario);
             if (codigoDaAcao.equalsIgnoreCase("N")) {
                 cancelaHorario(hora);
                 System.out.println(myAgent.getLocalName() + ": Notificado");
@@ -53,7 +54,7 @@ public class ComportamentoCoEnfermagem extends SimpleBehaviour {
                 }
                 ACLMessage resposta = mensagemRecebida.createReply();
                 resposta.setPerformative(ACLMessage.INFORM);
-                resposta.setContent("01010;" + situacao);
+                resposta.setContent("01010;" + situacao+";"+horario);
                 myAgent.send(resposta);
             }
             imprimirHorarios();

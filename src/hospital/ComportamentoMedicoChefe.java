@@ -31,7 +31,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
         if (mensagemRecebida != null) {
             
             String aux[] = mensagemRecebida.getContent().split(";");
-            String veioDoAgente = aux[0], codigoDaAcao = aux[1];
+            String veioDoAgente = aux[0], codigoDaAcao = aux[1], horario = aux[2];
             int idAtual = Integer.parseInt(mensagemRecebida.getConversationId());
             if (!bancoMenssagens.containsKey(idAtual)){
                 bancoMenssagens.put(idAtual,mensagemRecebida);
@@ -44,17 +44,17 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                 if (codigoDaAcao.equalsIgnoreCase("C")) {
                     System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
                     System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
-                    sendMessage("00010;C", mensagemRecebida.getConversationId());
+                    sendMessage("00010;C;"+horario, mensagemRecebida.getConversationId());
                     
                 } else if (codigoDaAcao.equalsIgnoreCase("N")) {
                     System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
                     System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
-                    sendMessage("00010;N", mensagemRecebida.getConversationId());
+                    sendMessage("00010;N;"+horario, mensagemRecebida.getConversationId());
                     
                 } else if (codigoDaAcao.equalsIgnoreCase("R")) {
                     System.out.println(myAgent.getLocalName() + ": Requisitado Disponibilidade");
                     System.out.println(myAgent.getLocalName() + ": Perguntando Sobre Disponibilidade ao Medico Chefe e ao Coordenador do centro cirurgico");
-                    sendMessage("00010;R", mensagemRecebida.getConversationId());
+                    sendMessage("00010;R;"+horario, mensagemRecebida.getConversationId());
                 }
 
             } else if (veioDoAgente.equals("01100")) {
@@ -65,7 +65,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                 } else {
                     situacaoCoTimeMedico1.put(idAtual,-1);
                 }
-                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual));
+                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario);
 
             } else if (veioDoAgente.equals("01010")) {
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
@@ -74,7 +74,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                 } else {
                     situacaoCoEnfermaria1.put(idAtual,-1);
                 }
-                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual));
+                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario);
 
             } else if (veioDoAgente.equals("01001")) {
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
@@ -83,7 +83,7 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                 } else {
                     situacaoCoAnestesista1.put(idAtual,-1);
                 }
-                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual));
+                verificarDisponibilidade(situacaoCoTimeMedico1.get(idAtual), situacaoCoEnfermaria1.get(idAtual), situacaoCoAnestesista1.get(idAtual), horario);
             }
         } else {
             System.out.println(myAgent.getLocalName() + ": Bloqueado para esperar receber mensagem.....");
@@ -105,20 +105,20 @@ public class ComportamentoMedicoChefe extends SimpleBehaviour {
                     myAgent.send(mensagemParaEnvio);
     }
 
-    private void verificarDisponibilidade(int situacaoCoTimeMedico, int situacaoCoEnfermaria, int situacaoCoAnestesista) {
+    private void verificarDisponibilidade(int situacaoCoTimeMedico, int situacaoCoEnfermaria, int situacaoCoAnestesista, String horario) {
         if (situacaoCoTimeMedico == 1 && situacaoCoEnfermaria == 1 && situacaoCoAnestesista == 1) {
-            sendResponse(mensagemCoordenadorHospital, "T");
+            sendResponse(mensagemCoordenadorHospital, "T", horario);
         } else if (situacaoCoTimeMedico != 0 && situacaoCoEnfermaria != 0 && situacaoCoAnestesista != 0) {
             if (situacaoCoTimeMedico == -1 || situacaoCoEnfermaria == -1 || situacaoCoAnestesista == -1) {
-                sendResponse(mensagemCoordenadorHospital, "F");
+                sendResponse(mensagemCoordenadorHospital, "F", horario);
             }
         }
     }
 
-    private void sendResponse(ACLMessage mensagemRecebida, String resultado) {
+    private void sendResponse(ACLMessage mensagemRecebida, String resultado, String horario) {
         ACLMessage resposta = mensagemRecebida.createReply();
         resposta.setPerformative(ACLMessage.INFORM);
-        resposta.setContent("01000;" + resultado);
+        resposta.setContent("01000;" + resultado + ";" + horario);
                     System.out.println(myAgent.getLocalName() + ": =++++++++++="+resposta.toString());
 
         myAgent.send(resposta);

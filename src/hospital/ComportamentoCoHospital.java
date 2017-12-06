@@ -43,7 +43,7 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
                                 
 
             String aux[] = mensagemRecebida.getContent().split(";");
-            String veioDoAgente = aux[0], codigoDaAcao = aux[1];
+            String veioDoAgente = aux[0], codigoDaAcao = aux[1], horario = aux[2];
             
             if (veioDoAgente.equals("00001")) {
                 if (codigoDaAcao.equalsIgnoreCase("C")) {
@@ -52,19 +52,19 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
                 
                     //Envia a mensagem aos destinatarios
                     
-                    sendMessage("00010;C", mensagemRecebida.getConversationId());
+                    sendMessage("00010;C;"+horario, mensagemRecebida.getConversationId());
                     
                 } else if (codigoDaAcao.equalsIgnoreCase("R")) {
                     System.out.println(myAgent.getLocalName() + ": Transplante aprovado, reservar na agenda");
                     //Criando e preenchendo menssagem
-                    sendMessage("00010;R", mensagemRecebida.getConversationId());
+                    sendMessage("00010;R;"+horario, mensagemRecebida.getConversationId());
                     bancoMenssagens.remove(idAtual);
                     
                     //Envia a mensagem aos destinatarios
                 } else if (codigoDaAcao.equalsIgnoreCase("N")) {
                     System.out.println(myAgent.getLocalName() + ": Transplante nao aprovado, Somente notificando");
                     //Criando e preenchendo menssagem
-                    sendMessage("00010;N", mensagemRecebida.getConversationId());
+                    sendMessage("00010;N;s"+horario, mensagemRecebida.getConversationId());
 
                     bancoMenssagens.remove(idAtual);
                     //Envia a mensagem aos destinatarios
@@ -76,14 +76,14 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
                     System.out.println(myAgent.getLocalName() + ": Centro Cirurgico disponivel");
                     situacaoCoCentroCirurgico1.put(idAtual,1);
                 } else situacaoCoCentroCirurgico1.put(idAtual,-1);
-                verificarDisponibilidade(situacaoMedicoChefe1.get(idAtual), situacaoCoCentroCirurgico1.get(idAtual),idAtual);
+                verificarDisponibilidade(situacaoMedicoChefe1.get(idAtual), situacaoCoCentroCirurgico1.get(idAtual),idAtual, horario);
             } else if (veioDoAgente.equals("01000")) {
                
                 if (codigoDaAcao.equalsIgnoreCase("T")) {
                     System.out.println(myAgent.getLocalName() + ": Madico chefe aprovou o procedimento");
                     situacaoMedicoChefe1.put(idAtual,1);
                 } else situacaoMedicoChefe1.put(idAtual,-1);
-                verificarDisponibilidade(situacaoMedicoChefe1.get(idAtual), situacaoCoCentroCirurgico1.get(idAtual),idAtual);
+                verificarDisponibilidade(situacaoMedicoChefe1.get(idAtual), situacaoCoCentroCirurgico1.get(idAtual),idAtual, horario);
             }
         } else {
             System.out.println(myAgent.getLocalName() + ": Bloqueado para esperar receber mensagem.....");
@@ -102,17 +102,16 @@ public class ComportamentoCoHospital extends SimpleBehaviour {
                      myAgent.send(mensagemParaEnvio);
     }
     
-    private void verificarDisponibilidade(int situacaoCoCentroCirurgico, int situacaoMedicoChefe, int idAtual){
-        if (situacaoCoCentroCirurgico == 1 && situacaoMedicoChefe == 1) sendResponse(bancoMenssagens.get(idAtual), "T", idAtual);
+    private void verificarDisponibilidade(int situacaoCoCentroCirurgico, int situacaoMedicoChefe, int idAtual, String horario){
+        if (situacaoCoCentroCirurgico == 1 && situacaoMedicoChefe == 1) sendResponse(bancoMenssagens.get(idAtual), "T", idAtual, horario);
         else if(situacaoCoCentroCirurgico != 0 && situacaoMedicoChefe != 0) 
-            if (situacaoCoCentroCirurgico == -1 || situacaoMedicoChefe == -1) sendResponse(bancoMenssagens.get(idAtual), "F", idAtual);
+            if (situacaoCoCentroCirurgico == -1 || situacaoMedicoChefe == -1) sendResponse(bancoMenssagens.get(idAtual), "F", idAtual, horario);
     }
-    private void sendResponse(ACLMessage mensagemRecebida, String resultado, int idAtual){
+    private void sendResponse(ACLMessage mensagemRecebida, String resultado, int idAtual, String horario){
             ACLMessage resposta =  mensagemRecebida.createReply();
             resposta.setPerformative(ACLMessage.INFORM);
-            resposta.setContent("00010;"+resultado);
+            resposta.setContent("00010;"+resultado + ";"+ horario);
             myAgent.send(resposta);
-            
             System.out.println(myAgent.getLocalName() + ":::"+bancoMenssagens);
     }
     @Override
