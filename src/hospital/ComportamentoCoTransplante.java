@@ -26,7 +26,7 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
         if (!enviouMensagen) {
             for (protocolo = 1; protocolo < 5; protocolo++) {
                 int hora = selectHour();
-                sendMessage("00001;C;" + hora, Integer.toString(protocolo));
+                sendMessage("00001;C;" + hora, Integer.toString(protocolo), ACLMessage.REQUEST);
                 System.out.println(myAgent.getLocalName() + ": Pergunta: Há disponibilidade para o exame");
 
             }
@@ -42,13 +42,13 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
             if (codigoDaAcao.equalsIgnoreCase("T")) {
                 System.out.println(myAgent.getLocalName() + ": Trasnplante aprovado, solicitando reserva: ");
                 //mandar menssagem com a reserva '''R'''
-                sendMessage("00001;R;" + horario, mensagemRecebida.getConversationId());
+                sendMessage("00001;R;" + horario, mensagemRecebida.getConversationId(), ACLMessage.INFORM);
 
                 bancoMenssagens.remove(idAtual);
             } else if (codigoDaAcao.equalsIgnoreCase("F")) {
                 System.out.println(myAgent.getLocalName() + ": Trasnplante não aprovado, somente notificando");
                 //nmandar menssagem com a sobre nao aprovacao '''N'''
-                sendMessage("00001;N;" + horario, mensagemRecebida.getConversationId());
+                sendMessage("00001;N;" + horario, mensagemRecebida.getConversationId(), ACLMessage.INFORM);
                 bancoMenssagens.remove(idAtual);
 
             }
@@ -60,8 +60,8 @@ public class ComportamentoCoTransplante extends SimpleBehaviour {
 
     }
 
-    private void sendMessage(String message, String idMenssagem) {
-        ACLMessage mensagemParaEnvio = new ACLMessage(ACLMessage.INFORM);
+    private void sendMessage(String message, String idMenssagem, int typeOfMessage) {
+        ACLMessage mensagemParaEnvio = new ACLMessage(typeOfMessage);
         mensagemParaEnvio.setSender(myAgent.getAID());
         mensagemParaEnvio.addReceiver(new AID("CoHospital", AID.ISLOCALNAME));
         mensagemParaEnvio.addReplyTo(new AID("CoTransplante", AID.ISLOCALNAME));
